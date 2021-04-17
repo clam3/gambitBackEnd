@@ -21,8 +21,8 @@ chess_df_train = pd.concat([chess_only_df_train, no_chess_df_train])
 chess_df_test = pd.concat([chess_only_df_test, no_chess_df_test])
 # chess_df_test.to_csv("chess_test.csv", index=False)
 
-mini_df_train = no_chess_df.sample(n=10)
-mini_df_test = no_chess_df.sample(n=10)
+mini_df_train = no_chess_df.sample(n=50)
+mini_df_test = no_chess_df.sample(n=50)
 
 mini_df_train.to_csv("mini_train.csv", index=False)
 mini_df_test.to_csv("mini_test.csv", index=False)

@@ -11,8 +11,8 @@ from transformers import BertForSequenceClassification, AdamW, BertConfig
 import random
 from transformers import BertTokenizer
 from bert_codes.feature_generation import combine_features,return_dataloader
-from bert_codes.data_extractor import data_collector
-from bert_codes.own_bert_models import *
+# from bert_codes.data_extractor import data_collector
+# from bert_codes.own_bert_models import *
 from bert_codes.utils import *
 from sklearn.metrics import accuracy_score,f1_score
 from tqdm import tqdm
@@ -73,14 +73,15 @@ def Eval_phase(params,which_files='test',model=None):
 		model.eval()
 
 	# Load the dataset
-	df_test=data_collector(test_files,params,False)
-	if(params['csv_file']=='*_translated.csv'):
-		sentences_test = df_test.translated.values
-	elif(params['csv_file']=='*_full.csv'):
-		sentences_test = df_test.text.values
+	df_test = pd.read_csv(params["test_data"]) # data_collector(test_files,params,False)
+	sentences_test = df_test["message"].values
+	# if(params['csv_file']=='*_translated.csv'):
+	# 	sentences_test = df_test.translated.values
+	# elif(params['csv_file']=='*_full.csv'):
+	# 	sentences_test = df_test.text.values
 		
 
-	labels_test = df_test.label.values
+	labels_test = df_test["hate_speech"].values
 	# Encode the dataset using the tokenizer
 	input_test_ids,att_masks_test=combine_features(sentences_test,tokenizer,params['max_length'])
 	test_dataloader=return_dataloader(input_test_ids,labels_test,att_masks_test,batch_size=params['batch_size'],is_train=False)

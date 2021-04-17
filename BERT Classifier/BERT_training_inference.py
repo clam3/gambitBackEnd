@@ -11,13 +11,14 @@ from transformers import BertForSequenceClassification, AdamW, BertConfig
 import random
 from bert_codes.feature_generation import combine_features,return_dataloader
 from bert_codes.data_extractor import data_collector
-from bert_codes.own_bert_models import *
+# from bert_codes.own_bert_models import *
 from bert_codes.utils import *
 from sklearn.metrics import accuracy_score,f1_score
 from tqdm import tqdm
 from BERT_inference import *
 from torch.utils.tensorboard import SummaryWriter
 import os
+import random
 
 writer = SummaryWriter('runs/gambit_experiment_1')
 
@@ -215,8 +216,8 @@ def train_model(params,best_val_fscore):
         #     neptune.log_metric('test_accuracy',test_accuracy)
 
         writer.add_scalar('fscore/val', val_fscore, epoch_i)
-        writer.add_scalar('fscore/test', val_fscore, epoch_i)
-        writer.add_scalar('Accuracy/val', test_accuracy, epoch_i) 
+        writer.add_scalar('fscore/test', test_fscore, epoch_i)
+        writer.add_scalar('Accuracy/val', val_accuracy, epoch_i) 
         writer.add_scalar('Accuracy/test', test_accuracy, epoch_i)
         
 
@@ -233,8 +234,7 @@ def train_model(params,best_val_fscore):
     writer.close()
     del model
     torch.cuda.empty_cache()
-    return fscore,best_val_fscore
-
+    return best_val_fscore, val_accuracy
 
 
 # Explanation of all the params used below. 
@@ -277,7 +277,7 @@ params={
     'take_ratio':False,
     'sample_ratio':16,
     'how_train':'baseline',
-    'epochs':5,
+    'epochs':1,
     'batch_size':16,
     'to_save':True,
     'weights':[1.0,1.0],
@@ -296,33 +296,28 @@ if __name__=='__main__':
     'es','French':'fr'}
     # torch.cuda.set_device(0)
 
-    lang_list = ['English']
-    # lang_list=list(lang_map.keys())
-    for lang in lang_list[0:3]:
-        params['language']=lang
-        for sample_ratio,take_ratio in [(16,False),(32,False),(64,False),(128,False),(256,False)]:
-            count=0
-            params['take_ratio']=take_ratio
-            params['sample_ratio']=sample_ratio
-            best_val_fscore=0
-            for lr in [2e-5,3e-5,5e-5]:
-                params['learning_rate']=lr
-                for ss in ['stratified','equal']:
-                    params['samp_strategy']=ss
-                    for seed in [2018,2019,2020,2021,2022]:
-                        params['random_seed']=seed
-                        count+=1
-                        _,best_val_fscore=train_model(params,best_val_fscore)
+    params['language']='English'
+    sample_ratio,take_ratio = (32,False)
+    count=0
+    params['take_ratio']=take_ratio
+    params['sample_ratio']=sample_ratio
+    best_val_fscore=0
+    lr = 2e-5
+    params['learning_rate']=lr
+    params['samp_strategy']="stratified"
+    params['random_seed']=random.choice(range(1000))
+    count+=1
+    _,best_val_fscore=train_model(params,best_val_fscore)
 
 
-        best_val_fscore=00
-        for lr in [2e-5,3e-5,5e-5]:
-            params['learning_rate']=lr
-            params['samp_strategy']='stratified'
-            for seed in [2018,2019,2020,2021,2022][:1]:
-                params['random_seed']=seed
-                _,best_val_fscore=train_model(params,best_val_fscore)
-        print('============================')
-        print('Model for Language',lang,'is trained')
-        print('============================')
-        
+        # best_val_fscore=00
+        # for lr in [2e-5,3e-5,5e-5]:
+        #     params['learning_rate']=lr
+        #     params['samp_strategy']='stratified'
+        #     for seed in [2018,2019,2020,2021,2022][:1]:
+        #         params['random_seed']=seed
+        #         _,best_val_fscore=train_model(params,best_val_fscore)
+        # print('============================')
+        # print('Model for Language',lang,'is trained')
+        # print('============================')
+        # 
