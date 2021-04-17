@@ -32,10 +32,10 @@ else:
     print('No GPU available, using the CPU instead.')
     device = torch.device("cpu")
 
-# Set the gpu device 
-print("current gpu device", torch.cuda.current_device())
-torch.cuda.set_device(0)
-print("current gpu device",torch.cuda.current_device())
+# # Set the gpu device 
+# print("current gpu device", torch.cuda.current_device())
+# torch.cuda.set_device(0)
+# print("current gpu device",torch.cuda.current_device())
 
 
 # Initialize neptune for logging the parameters and metrics
