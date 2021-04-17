@@ -8,6 +8,7 @@ no_chess_df = total_df.loc[total_df["chess"] == 0]
 
 chess_df = total_df.loc[total_df["chess"] == 1]
 
+# https://stackoverflow.com/a/38251213/12940893
 no_chess_df_train, no_chess_df_validate, no_chess_df_test = \
               np.split(no_chess_df.sample(frac=1, random_state=42), 
                        [int(.6*len(no_chess_df)), int(.8*len(no_chess_df))])

@@ -68,7 +68,7 @@ def train_model(params,best_val_fscore):
     print('Loading BERT tokenizer...')
     tokenizer = AutoTokenizer.from_pretrained("bert-base-multilingual-uncased") # BertTokenizer.from_pretrained(params['path_files'], do_lower_case=False)
     df_train = pd.read_csv(params["train_data"]) # data_collector(train_files,params,True)
-    df_val = pd.read_csv(params["test_data"]) # data_collector(val_files,params,False)
+    df_val = pd.read_csv(params["validate_data"]) # data_collector(val_files,params,False)
     
     # Get the comment texts and corresponding labels
     if(params['csv_file']=='aggregated_data.csv'):
@@ -270,6 +270,7 @@ params={
     'files':'../data/',
     'train_data': '../data/chess_train.csv',
     'test_data': '../data/chess_test.csv',
+    'validate_data': '../data/chess_validate.csv',
     'csv_file':'aggregated_data.csv',
     'samp_strategy':'stratified',
     'epsilon':1e-8,
