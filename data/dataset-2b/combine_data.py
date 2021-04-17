@@ -27,4 +27,4 @@ del combined_df["label"]
 
 print(combined_df)
 
-combined_df.to_csv("dataset_2b.csv")
+combined_df.to_csv("dataset_2b.csv", index=False)
