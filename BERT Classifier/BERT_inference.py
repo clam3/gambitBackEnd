@@ -1,9 +1,9 @@
 # Necessary imports
 import transformers 
 import torch
-import neptune
+# import neptune
 
-from api_config import project_name,proxies,api_token
+# from api_config import project_name,proxies,api_token
 import glob 
 from transformers import get_linear_schedule_with_warmup
 from transformers import BertTokenizer
@@ -31,8 +31,8 @@ else:
 
 
 # Initialize neptune for logging
-neptune.init(project_name,api_token=api_token,proxies=proxies)
-neptune.set_project(project_name)
+# neptune.init(project_name,api_token=api_token,proxies=proxies)
+# neptune.set_project(project_name)
 
 
 # The function for evaluating
@@ -133,13 +133,13 @@ def Eval_phase(params,which_files='test',model=None):
 		bert_model = params['path_files'][:-1]
 		language  = params['language']
 		name_one=bert_model+"_"+language
-		neptune.create_experiment(name_one,params=params,send_hardware_metrics=False,run_monitoring_thread=False)
-		neptune.append_tag(bert_model)
-		neptune.append_tag(language)
-		neptune.append_tag('test')
-		neptune.log_metric('test_f1score',testf1)
-		neptune.log_metric('test_accuracy',testacc)
-		neptune.stop()
+		# neptune.create_experiment(name_one,params=params,send_hardware_metrics=False,run_monitoring_thread=False)
+		# neptune.append_tag(bert_model)
+		# neptune.append_tag(language)
+		# neptune.append_tag('test')
+		# neptune.log_metric('test_f1score',testf1)
+		# neptune.log_metric('test_accuracy',testacc)
+		# neptune.stop()
 	
 	return testf1,testacc
 
