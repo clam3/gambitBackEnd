@@ -9,7 +9,6 @@ from transformers import get_linear_schedule_with_warmup
 from transformers import BertTokenizer
 from transformers import BertForSequenceClassification, AdamW, BertConfig
 import random
-from transformers import BertTokenizer
 from bert_codes.feature_generation import combine_features,return_dataloader
 from bert_codes.data_extractor import data_collector
 from bert_codes.own_bert_models import *
@@ -263,8 +262,8 @@ params={
     'is_train':True,
     'is_model':True,
     'learning_rate':2e-5,
-    'files':'../Dataset',
-    'csv_file':'*_full.csv',
+    'files':'../data/dataset-2b',
+    'csv_file':'dataset_2b.csv',
     'samp_strategy':'stratified',
     'epsilon':1e-8,
     'path_files':'multilingual_bert',
