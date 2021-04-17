@@ -67,11 +67,11 @@ def train_model(params,best_val_fscore):
 	
 	# Get the comment texts and corresponding labels
 	if(params['csv_file']=='*_full.csv'):
-		sentences_train = df_train.text.values
-		sentences_val = df_val.text.values
-	elif(params['csv_file']=='*_translated.csv'):
-		sentences_train = df_train.translated.values
-		sentences_val = df_val.translated.values
+		sentences_train = df_train["message"].values 
+		sentences_val = df_val["message"].values
+	# elif(params['csv_file']=='*_translated.csv'):       --don't have to worry about LM  
+	# 	sentences_train = df_train.translated.values
+	# 	sentences_val = df_val.translated.values
 	
 	labels_train = df_train.label.values
 	labels_val = df_val.label.values
