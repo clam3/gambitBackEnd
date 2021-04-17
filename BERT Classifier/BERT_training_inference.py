@@ -9,7 +9,6 @@ from transformers import get_linear_schedule_with_warmup
 from transformers import BertTokenizer
 from transformers import BertForSequenceClassification, AdamW, BertConfig
 import random
-from transformers import BertTokenizer
 from bert_codes.feature_generation import combine_features,return_dataloader
 from bert_codes.data_extractor import data_collector
 from bert_codes.own_bert_models import *
