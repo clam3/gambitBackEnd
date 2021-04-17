@@ -32,7 +32,7 @@ else:
     print('No GPU available, using the CPU instead.')
     device = torch.device("cpu")
 
-# # Set the gpu device 
+# # # Set the gpu device 
 # print("current gpu device", torch.cuda.current_device())
 # torch.cuda.set_device(0)
 # print("current gpu device",torch.cuda.current_device())
@@ -48,11 +48,16 @@ def train_model(params,best_val_fscore):
     
     # In case of english languages, translation is the origin data itself.
     if(params['language']=='English'):
-        params['csv_file']='*_full.csv'
+        params['csv_file']='aggregated_data.csv'
     
 
-    train_path=params['files']+'/train/'+params['csv_file']
-    val_path=params['files']+'/val/'+params['csv_file']
+    # train_path=params['files']+'/train/'+params['csv_file']
+    # val_path=params['files']+'/val/'+params['csv_file']
+
+    train_path=params['files']+params['csv_file']
+    val_path=params['files']+params['csv_file']
+
+    print(train_path)
 
     # Load the training and validation datasets
     train_files=glob.glob(train_path)
@@ -65,7 +70,7 @@ def train_model(params,best_val_fscore):
     df_val = pd.read_csv(params["test_data"]) # data_collector(val_files,params,False)
     
     # Get the comment texts and corresponding labels
-    if(params['csv_file']=='*_full.csv'):
+    if(params['csv_file']=='aggregated_data.csv'):
         sentences_train = df_train["message"].values 
         sentences_val = df_val["message"].values
     # elif(params['csv_file']=='*_translated.csv'):       --don't have to worry about LM  
@@ -82,7 +87,7 @@ def train_model(params,best_val_fscore):
     # Select the required bert model. Refer below for explanation of the parameter values.
     model=BertForSequenceClassification.from_pretrained("bert-base-multilingual-uncased") # select_model(params['what_bert'],params['path_files'],params['weights'])
     # Tell pytorch to run this model on the GPU.
-    model.cuda()
+    # model.cuda()
 
     # Do the required encoding using the bert tokenizer
     input_train_ids,att_masks_train=combine_features(sentences_train,tokenizer,params['max_length'])
