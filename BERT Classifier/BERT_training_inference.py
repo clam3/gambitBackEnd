@@ -17,8 +17,10 @@ from bert_codes.utils import *
 from sklearn.metrics import accuracy_score,f1_score
 from tqdm import tqdm
 from BERT_inference import *
+from torch.utils.tensorboard import SummaryWriter
 import os
 
+writer = SummaryWriter('runs/gambit_experiment_1')
 
 # If there's a GPU available...
 if torch.cuda.is_available():    
@@ -163,7 +165,10 @@ def train_model(params,best_val_fscore):
 			# loss value out of the tuple.
 			loss = outputs[0]
 			if(params['logging']=='neptune'):
-				neptune.log_metric('batch_loss',loss)
+				neptune.log_metric('batch_loss', step)
+
+			writer.add_scalar("Loss/batch", loss, step)
+
 			# Accumulate the training loss over all of the batches so that we can
 			# calculate the average loss at the end. `loss` is a Tensor containing a
 			# single value; the `.item()` function just returns the Python value 
@@ -184,12 +189,15 @@ def train_model(params,best_val_fscore):
 			scheduler.step()
 		# Calculate the average loss over the training data.
 		avg_train_loss = total_loss / len(train_dataloader)
+
 		if(params['logging']=='neptune'):
 			neptune.log_metric('avg_train_loss',avg_train_loss)
 		
+		writer.add_scalar("Loss/train", avg_train_loss, epoch_i)
 
 		# Store the loss value for plotting the learning curve.
 		loss_values.append(avg_train_loss)
+
 		# Compute the metrics on the validation and test sets.
 		val_fscore,val_accuracy=Eval_phase(params,'val',model)		
 		test_fscore,test_accuracy=Eval_phase(params,'test',model)
@@ -201,6 +209,12 @@ def train_model(params,best_val_fscore):
 			neptune.log_metric('test_fscore',test_fscore)
 			neptune.log_metric('test_accuracy',test_accuracy)
 
+		writer.add_scalar('fscore/val', val_fscore, epoch_i)
+		writer.add_scalar('fscore/test', val_fscore, epoch_i)
+		writer.add_scalar('Accuracy/val', test_accuracy, epoch_i) 
+    	writer.add_scalar('Accuracy/test', test_accuracy, epoch_i)
+		
+
 		# Save the model only if the validation fscore improves. After all epochs, the best model is the final saved one. 
 		if(val_fscore > best_val_fscore):
 			print(val_fscore,best_val_fscore)
@@ -210,6 +224,8 @@ def train_model(params,best_val_fscore):
 
 	if(params['logging']=='neptune'):
 		neptune.stop()	
+	writer.flush()
+	writer.close()
 	del model
 	torch.cuda.empty_cache()
 	return fscore,best_val_fscore
