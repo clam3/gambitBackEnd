@@ -287,7 +287,7 @@ if __name__=='__main__':
 
     lang_map={'Arabic':'ar','French':'fr','Portugese':'pt','Spanish':'es','English':'en','Indonesian':'id','Italian':'it','German':'de','Polish':'pl','Spanish':
     'es','French':'fr'}
-    torch.cuda.set_device(0)
+    # torch.cuda.set_device(0)
 
     lang_list=list(lang_map.keys())
     for lang in lang_list[0:3]:
