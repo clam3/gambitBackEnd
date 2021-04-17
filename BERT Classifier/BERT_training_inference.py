@@ -34,9 +34,9 @@ else:
     device = torch.device("cpu")
 
 # # # Set the gpu device 
-# print("current gpu device", torch.cuda.current_device())
-# torch.cuda.set_device(0)
-# print("current gpu device",torch.cuda.current_device())
+print("current gpu device", torch.cuda.current_device())
+torch.cuda.set_device(0)
+print("current gpu device",torch.cuda.current_device())
 
 
 # Initialize neptune for logging the parameters and metrics
@@ -88,7 +88,7 @@ def train_model(params,best_val_fscore):
     # Select the required bert model. Refer below for explanation of the parameter values.
     model=BertForSequenceClassification.from_pretrained("bert-base-multilingual-uncased") # select_model(params['what_bert'],params['path_files'],params['weights'])
     # Tell pytorch to run this model on the GPU.
-    # model.cuda()
+    model.cuda()
 
     # Do the required encoding using the bert tokenizer
     input_train_ids,att_masks_train=combine_features(sentences_train,tokenizer,params['max_length'])
@@ -123,7 +123,7 @@ def train_model(params,best_val_fscore):
     language  = params['language']
     name_one=bert_model+"_"+language
     if(params['logging']=='neptune'):
-    	pass
+        pass
         # neptune.create_experiment(name_one,params=params,send_hardware_metrics=False,run_monitoring_thread=False)
         # neptune.append_tag(bert_model)
         # neptune.append_tag(language)
@@ -268,8 +268,8 @@ params={
     'is_model':True,
     'learning_rate':2e-5,
     'files':'../data/',
-    'train_data': '../data/mini_train.csv',
-    'test_data': '../data/mini_test.csv',
+    'train_data': '../data/chess_train.csv',
+    'test_data': '../data/chess_test.csv',
     'csv_file':'aggregated_data.csv',
     'samp_strategy':'stratified',
     'epsilon':1e-8,
@@ -277,7 +277,7 @@ params={
     'take_ratio':False,
     'sample_ratio':16,
     'how_train':'baseline',
-    'epochs':1,
+    'epochs':5,
     'batch_size':16,
     'to_save':True,
     'weights':[1.0,1.0],
@@ -294,7 +294,7 @@ if __name__=='__main__':
 
     lang_map={'Arabic':'ar','French':'fr','Portugese':'pt','Spanish':'es','English':'en','Indonesian':'id','Italian':'it','German':'de','Polish':'pl','Spanish':
     'es','French':'fr'}
-    # torch.cuda.set_device(0)
+    torch.cuda.set_device(0)
 
     params['language']='English'
     sample_ratio,take_ratio = (32,False)
