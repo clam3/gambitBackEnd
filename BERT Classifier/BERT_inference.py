@@ -48,12 +48,15 @@ def Eval_phase(params,which_files='test',model=None):
 	# Load the files to test on
 	if(which_files=='train'):
 		path=params['files']+'/train/'+params['csv_file']
+		df_test = pd.read_csv(params["train_data"]) # data_collector(test_files,params,False)
 		test_files=glob.glob(path)
 	if(which_files=='val'):
 		path=params['files']+'/val/'+params['csv_file']
+		df_test = pd.read_csv(params["validate_data"]) # data_collector(test_files,params,False)
 		test_files=glob.glob(path)
-	if(which_files=='test'):
+	else: # (which_files=='test'):
 		path=params['files']+'/test/'+params['csv_file']
+		df_test = pd.read_csv(params["test_data"]) # data_collector(test_files,params,False)
 		test_files=glob.glob(path)
 	
 	'''Testing phase of the model'''
@@ -73,7 +76,6 @@ def Eval_phase(params,which_files='test',model=None):
 		model.eval()
 
 	# Load the dataset
-	df_test = pd.read_csv(params["test_data"]) # data_collector(test_files,params,False)
 	sentences_test = df_test["message"].values
 	# if(params['csv_file']=='*_translated.csv'):
 	# 	sentences_test = df_test.translated.values
