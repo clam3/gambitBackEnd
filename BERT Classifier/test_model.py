@@ -20,5 +20,5 @@ def run_model(model, tokenized_inputs):
 if __name__ == "__main__":
 	config, tokenizer, model = load_model("no_chess/bert-base-multilingual-uncased_English_translated_baseline_32/")
 
-	tokenized_inputs = tokenize_inputs("hello my name is bob")
+	tokenized_inputs = tokenize_inputs(tokenizer, "hello my name is bob")
 	output = run_model(model, tokenized_inputs)
