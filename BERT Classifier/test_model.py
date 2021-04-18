@@ -28,7 +28,7 @@ def read_output(output):
 	output = probs.detach().numpy()[0]
 	idx = np.argmax(output)
 	globals().update(locals())
-	return idx, int(100*output[idx])
+	return int(idx), int(100*output[idx])
 
 
 def get_prediction(config, tokenizer, model, inputs):
