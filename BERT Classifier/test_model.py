@@ -3,7 +3,7 @@ from transformers import (
 	BertTokenizer,
 	BertConfig
 )
-
+import pandas as pd
 
 def load_model(model_path="models_saved/bert-base-multilingual-uncased_English_translated_baseline_32/"):
 	config = BertConfig.from_pretrained(model_path)
@@ -12,7 +12,7 @@ def load_model(model_path="models_saved/bert-base-multilingual-uncased_English_t
 	return config, tokenizer, model
 
 def tokenize_inputs(tokenizer, inputs):
-	return tokenizer(inputs, return_tensors="pt")
+	return tokenizer(inputs, padding=True, truncation=True, return_tensors="pt")
 
 def run_model(model, tokenized_inputs):
 	return model(**tokenized_inputs)
@@ -22,3 +22,9 @@ if __name__ == "__main__":
 
 	tokenized_inputs = tokenize_inputs(tokenizer, "hello my name is bob")
 	output = run_model(model, tokenized_inputs)
+
+	test_df = pd.read_csv("../data/no_chess_test.csv")
+	test_inputs = tokenize_inputs(tokenizer, test_df["message"].tolist())
+	test_labels = test_df["hate_speech"]
+
+	test_output = run_model(model, test_inputs)
