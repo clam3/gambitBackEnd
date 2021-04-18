@@ -3,7 +3,7 @@ import torch.nn.functional as F
 import pandas as pd
 import numpy as np
 from transformers import (
-	BertModel,
+	BertForSequenceClassification,
 	BertTokenizer,
 	BertConfig
 )
@@ -13,26 +13,28 @@ from sklearn.metrics import matthews_corrcoef
 def load_model(model_path="models_saved/bert-base-multilingual-uncased_English_translated_baseline_32/"):
 	config = BertConfig.from_pretrained(model_path)
 	tokenizer = BertTokenizer.from_pretrained(model_path)
-	model = BertModel.from_pretrained(model_path)
+	model = BertForSequenceClassification.from_pretrained(model_path)
 	return config, tokenizer, model
 
 def tokenize_inputs(tokenizer, inputs):
 	return tokenizer(inputs, padding=True, truncation=True, return_tensors="pt")
 
 def run_model(model, tokenized_inputs):
-	return model(**tokenized_inputs)
+	return model(**tokenized_inputs)["logits"]
 
 def read_output(output):
-	logits = torch.mean(output[0][0], 0) # .detach().cpu().numpy()
-	probs = torch.sigmoid(logits).detach().numpy()
-	idx = np.argmax(probs)
-	return probs[idx]
+	# logits = torch.mean(output[0][0], 0) # .detach().cpu().numpy()
+	probs = torch.softmax(output, dim=1)
+	output = probs.detach().numpy()[0]
+	idx = np.argmax(output)
+	globals().update(locals())
+	return idx, int(100*output[idx])
 
 
 def get_prediction(config, tokenizer, model, inputs):
 	tokenized_inputs = tokenize_inputs(tokenizer, inputs)
 	prob = read_output(run_model(model, tokenized_inputs))
-	return float(prob)
+	return prob
 
 if __name__ == "__main__":
 	test_df = pd.read_csv("../data/no_chess_test.csv")

@@ -85,7 +85,7 @@ class ModelRequestHandler(BaseHTTPRequestHandler):
                     self.end_headers()
                     self.wfile.write(
                         json.dumps(
-                            {"confidence": 0}
+                            {"verdict": 0, "confidence": 100}
                         ).encode("utf-8")
                     )
 
@@ -97,13 +97,13 @@ class ModelRequestHandler(BaseHTTPRequestHandler):
                     self.end_headers()
                     self.wfile.write(
                         json.dumps(
-                            {"confidence": 1}
+                            {"verdict": 1, "confidence": 100}
                         ).encode("utf-8")
                     )
 
                 else:
                     text = request["text"]
-                    verdict = get_prediction(config, tokenizer, model, text)
+                    verdict, confidence = get_prediction(config, tokenizer, model, text)
 
                     self.send_response(200)
                     self.send_header("Content-type", "application/json")
@@ -111,7 +111,7 @@ class ModelRequestHandler(BaseHTTPRequestHandler):
                     self.send_header("Vary", "Accept-Encoding, Origin")
                     self.end_headers()
                     self.wfile.write(json.dumps(
-                    	{"confidence": verdict}
+                    	{"verdict": verdict, "confidence": confidence}
                     ).encode("utf-8"))
                     
 
