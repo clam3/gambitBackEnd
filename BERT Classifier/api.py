@@ -104,6 +104,7 @@ class ModelRequestHandler(BaseHTTPRequestHandler):
                 else:
                     text = request["text"]
                     print(text)
+                    print(request)
                     verdict, confidence = get_prediction(config, tokenizer, model, text)
 
                     self.send_response(200)
