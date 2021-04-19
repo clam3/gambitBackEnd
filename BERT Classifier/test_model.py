@@ -2,13 +2,14 @@ import torch
 import torch.nn.functional as F
 import pandas as pd
 import numpy as np
+import os
 from transformers import (
 	BertForSequenceClassification,
 	BertTokenizer,
 	BertConfig
 )
 
-from sklearn.metrics import matthews_corrcoef
+archive = os.path.join(os.getcwd(), "they_actually_said_that.txt")
 
 def load_model(model_path="models_saved/bert-base-multilingual-uncased_English_translated_baseline_32/"):
 	config = BertConfig.from_pretrained(model_path)
@@ -27,14 +28,19 @@ def read_output(output):
 	probs = torch.softmax(output, dim=1)
 	output = probs.detach().numpy()[0]
 	idx = np.argmax(output)
-	globals().update(locals())
 	return int(idx), int(100*output[idx])
 
 
 def get_prediction(config, tokenizer, model, inputs):
+	write_text(inputs)
 	tokenized_inputs = tokenize_inputs(tokenizer, inputs)
 	prob = read_output(run_model(model, tokenized_inputs))
 	return prob
+
+def write_text(inputs):
+    print(archive)
+    with open(archive, "a") as outfile:
+        outfile.write(inputs[:1000] + "\n\n")
 
 if __name__ == "__main__":
 	test_df = pd.read_csv("../data/no_chess_test.csv")

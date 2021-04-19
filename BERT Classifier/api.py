@@ -7,11 +7,14 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 import ssl
 import json
 import traceback
+import os
 
 # server config
 PORT = 3000
 SSL_KEY = "ssl/private.key"
 SSL_CERT = "ssl/ca_bundle.crt"
+
+archive = os.path.join(os.path.dirname(__file__), "they_actually_said_that.txt")
 
 config, tokenizer, model = load_model("chess/bert-base-multilingual-uncased_English_translated_baseline_32/")
 
@@ -100,6 +103,9 @@ class ModelRequestHandler(BaseHTTPRequestHandler):
                             {"verdict": 1, "confidence": 100}
                         ).encode("utf-8")
                     )
+                    print(archive)
+                    with open(archive, "a") as outfile:
+                        outfile.write(request["text"][:1000] + "\n\n")
 
                 else:
                     text = request["text"]
