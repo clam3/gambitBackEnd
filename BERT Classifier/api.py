@@ -14,7 +14,6 @@ PORT = 3000
 SSL_KEY = "ssl/private.key"
 SSL_CERT = "ssl/ca_bundle.crt"
 
-archive = os.path.join(os.path.dirname(__file__), "they_actually_said_that.txt")
 
 config, tokenizer, model = load_model("chess/bert-base-multilingual-uncased_English_translated_baseline_32/")
 
@@ -26,6 +25,13 @@ class ModelRequestHandler(BaseHTTPRequestHandler):
         try:
             if self.path == "/":
                 self.path = "/index.html"
+
+            if self.path == "they_actually_said_that.txt":
+                with open(self.path, "r") as document:
+                    self.send_response(200)
+                    self.send_header("Content-type", "text/html")
+                    self.end_headers()
+                    self.wfile.write(document.read().encode("utf-8"))
 
             if self.path[-5:] == ".html":
                 with open("." + self.path, "r") as document:
@@ -103,9 +109,6 @@ class ModelRequestHandler(BaseHTTPRequestHandler):
                             {"verdict": 1, "confidence": 100}
                         ).encode("utf-8")
                     )
-                    print(archive)
-                    with open(archive, "a") as outfile:
-                        outfile.write(request["text"][:1000] + "\n\n")
 
                 else:
                     text = request["text"]
