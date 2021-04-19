@@ -38,7 +38,6 @@ def get_prediction(config, tokenizer, model, inputs):
 	return prob
 
 def write_text(inputs):
-    print(archive)
     with open(archive, "a") as outfile:
         outfile.write(inputs[:1000] + "\n\n")
 
